@@ -1,15 +1,17 @@
 # gerar nome, gerar email, gerar telefone, gerar cidade, gerar estado
 from lib.data import *
 from random import choice
+from time import sleep
+from os import system
 
 
 def line():
-    return '-' * 50
+    return '-' * 60
 
 
 def title(message):
     print(line())
-    print(f'|{message:^48}|')
+    print(f'|{message:^58}|')
     print(line())
 
 
@@ -27,15 +29,11 @@ def validate_user_input_options(inp):
 
     inp_options = inp.split(',')
     for op in inp_options:
-        if len(op) > 1:
-            print(
-                f'\033[0;31m"{op}" é uma opção inválida! Tente novamente...\033[m')
-            print(line())
+        if len(op) > 1 or len(op) < 1:
+            invalid_option(op)
             return False
         if op not in '12345':
-            print(
-                f'\033[0;31m"{op}" é uma opção inválida! Tente novamente...\033[m')
-            print(line())
+            invalid_option(op)
             return False
 
     print(line())
@@ -51,41 +49,51 @@ def validate_user_input_options(inp):
         elif op == '5':
             print(f'Est.: {choice(states)}')
         else:
-            print('\033[0;31mOpção inválida! Tente novamente...\033[m')
-            print(line())
+            invalid_option()
             return False
-    print()
+    print(line())
     return True
 
 
-def validate_user_input_save(inp):
-    if inp in 's':
-        print('Escolheu salvar.')
-        print(line())
-        return True
-    elif inp in 'n':
-        print('Escolheu não salvar.')
-        print(line())
-        return True
+def invalid_option(option=''):
+    if option == '':
+        print('\033[0;31mOpção inválida! Tente novamente...\033[m')
     else:
         print(
-            f'\033[0;31m"{inp}" é uma opção inválida!\033[m Digite \033[0;33mS\033[m para sim e \033[0;33mN\033[m para não.')
-        print(line())
+            f'\033[0;31m"{option}" é uma opção inválida! Tente novamente...\033[m')
+    print(line())
+
+
+def validate_user_input_save(inp):
+    message = ''
+    if inp in 's':
+        message = 'Salvando...'
+    elif inp in 'n':
+        message = 'Finalizando...'
+    else:
+        invalid_option(inp)
         return False
+    print(message)
+    sleep(2)
+    print(line())
+    return True
 
 
-title("GERADOR DE DADOS ALEATÓRIOS")
-menu('Gerar nome', 'Gerar email', 'Gerar telefone',
-     'Gerar cidade', 'Gerar estado')
 while True:
-    user_option = str(input('Digite sua opção: ')).strip().lower()
-    validate_option = validate_user_input_options(user_option)
+    title("GERADOR DE DADOS ALEATÓRIOS")
+    menu('Gerar nome', 'Gerar email', 'Gerar telefone',
+         'Gerar cidade', 'Gerar estado')
 
-    if validate_option == True:
-        validate_save = False
-        while not validate_save:
-            user_save_data = str(
-                input('Deseja salvar os dados? [S/N] ')).strip().lower()[0]
-            validate_save = validate_user_input_save(user_save_data)
-        title('Saindo do sistema... até logo!')
-        break
+    validate_option = False
+    while not validate_option:
+        user_option = str(input('Digite sua opção: ')).strip().lower()
+        validate_option_r = validate_user_input_options(user_option)
+
+    validate_save = False
+    while not validate_save:
+        user_save_data = str(
+            input('Deseja salvar os dados? [S/N] ')).strip().lower()[0]
+        validate_save = validate_user_input_save(user_save_data)
+
+    input('Pressione qualquer tecla para continuar...')
+    system('cls')
