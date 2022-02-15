@@ -24,9 +24,6 @@ def menu(*options):
 
 
 def validate_user_input_options(inp):
-    if inp == 'parar':
-        return True
-
     inp_options = inp.split(',')
     for op in inp_options:
         if len(op) > 1 or len(op) < 1:
@@ -79,15 +76,26 @@ def validate_user_input_save(inp):
     return True
 
 
+def read_input_option(message):
+    while True:
+        user_option = str(input(message)).strip().lower()
+        if user_option == 'parar':
+            return False
+        else:
+            validate_option = validate_user_input_options(user_option)
+            if validate_option:
+                return True
+
+
 while True:
     title("GERADOR DE DADOS ALEATÓRIOS")
     menu('Gerar nome', 'Gerar email', 'Gerar telefone',
          'Gerar cidade', 'Gerar estado')
 
-    validate_option = False
-    while not validate_option:
-        user_option = str(input('Digite sua opção: ')).strip().lower()
-        validate_option_r = validate_user_input_options(user_option)
+    validate_option = read_input_option('Digite sua opção(ões): ')
+    if validate_option == False:
+        title('Saindo do sistema... até logo!')
+        break
 
     validate_save = False
     while not validate_save:
@@ -95,5 +103,5 @@ while True:
             input('Deseja salvar os dados? [S/N] ')).strip().lower()[0]
         validate_save = validate_user_input_save(user_save_data)
 
-    input('Pressione qualquer tecla para continuar...')
+    input('Pressione Enter para continuar...')
     system('cls')
